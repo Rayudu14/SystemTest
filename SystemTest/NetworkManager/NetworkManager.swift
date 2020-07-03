@@ -12,9 +12,9 @@ enum URLError : Error {
     case unformatedURL
     case dataNotFound
 }
-
-class URLConstants {
-    static let factsURL = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
+// A global container for URL
+struct URLConstants {
+    static let rowsURL = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
 }
 
 class Network {

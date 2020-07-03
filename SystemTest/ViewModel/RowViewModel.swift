@@ -11,16 +11,16 @@ import UIKit
 
 class RowsViewModel {
     
-//    MARK:- Objects & Variables
+    //    MARK:- Objects & Variables
     var rowsArray = [Rows]()
     weak var vc : ViewController!
     
-//    MARK:- Get API Calls
+    //    MARK:- Get API Calls
     
-    /// Get Facts API Call
+    /// Get Rows Info API Call
     func getRowsInfoFromService() {
         
-        Network.getApiCallWithRequestString(requestString: URLConstants.factsURL) { (response) in
+        Network.getApiCallWithRequestString(requestString: URLConstants.rowsURL) { (response) in
             
             switch response {
             case .failure(let error):
@@ -38,17 +38,19 @@ class RowsViewModel {
                         self.vc.present(alert, animated: true, completion: nil)
                     }
                 }
-            
+                
             case .success(let responseData):
                 
                 do {
                     let str = String(decoding: responseData, as: UTF8.self)
                     if let data = str.data(using: .utf8) {
                         let jsonDecoder = JSONDecoder()
+                        /// Converting response to our custom model
                         let responseModel = try jsonDecoder.decode(MainJson.self, from: data)
                         if let rows = responseModel.rows {
                             self.rowsArray = rows
                         }
+                        /// reloading the table view and updating the navigation title
                         DispatchQueue.main.async {
                             self.vc.navTitle = responseModel.title ?? ""
                             self.vc.rowsTableView.reloadData()

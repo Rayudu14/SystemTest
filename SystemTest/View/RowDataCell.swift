@@ -11,11 +11,9 @@ import SDWebImage
 
 class RowDataCell: UITableViewCell {
     
-    var descriptionlblBottomConstraint : NSLayoutConstraint!
     private let rowTitleLbl : UILabel = {
         let lbl = UILabel()
         lbl.textColor = .black
-    //    lbl.backgroundColor = .red
         lbl.font = UIFont.boldSystemFont(ofSize: 16)
         lbl.textAlignment = .left
         return lbl
@@ -35,29 +33,29 @@ class RowDataCell: UITableViewCell {
         imgView.clipsToBounds = true
         return imgView
     }()
-    
+    /// Updating the cell information
     var row : Rows? {
         didSet {
             if let imgUrl = row?.imageHref {
+                /// passing image url to SDWebImage to load image to the cell
                 rowImage.sd_setImage(with: URL(string: imgUrl), placeholderImage: UIImage(named: "Placeholder"), options: .lowPriority) { (image, error, cacheType, imageURL) in
                     
-                    if  error != nil {
+                    if  error != nil { /// adding default image if any error occured
                         self.rowImage.image = UIImage(named:"Placeholder")
                     }
                     else {
                         self.rowImage.image = image
                     }
-                    
                 }
             }
-            else {
+            else { /// addding the default image if there is no image
                 rowImage.image = UIImage(named:"Placeholder")
             }
             rowTitleLbl.text = row?.title
             rowDescriptionLabel.text = row?.description
         }
     }
-    
+    /// Adding constraints to the view elements
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.addSubview(rowTitleLbl)
@@ -69,7 +67,7 @@ class RowDataCell: UITableViewCell {
         rowDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         rowTitleLbl.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
-        rowTitleLbl.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5).isActive = true
+        rowTitleLbl.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor,      constant: 5).isActive = true
         rowTitleLbl.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5).isActive = true
         
         rowImage.topAnchor.constraint(equalTo: rowTitleLbl.bottomAnchor, constant: 5).isActive = true
