@@ -10,9 +10,9 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let cellId = "cellId"
+    let cellId        = "cellId"
     var rowsTableView = UITableView()
-    var rowsVM  = RowsViewModel()
+    var rowsVM        = RowsViewModel()
     
     var navTitle: String = "" {
         didSet {
@@ -63,9 +63,10 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! RowDataCell
-        let rowModel = rowsVM.rowsArray[indexPath.row]
-        cell.row = rowModel
+        let cell            = tableView.dequeueReusableCell(withIdentifier: cellId, for:                                       indexPath) as! RowDataCell
+        cell.selectionStyle = .none
+        let rowModel        = rowsVM.rowsArray[indexPath.row]
+        cell.row            = rowModel
         return cell
     }
 }

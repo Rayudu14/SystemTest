@@ -27,12 +27,10 @@ class RowDataCell: UITableViewCell {
         lbl.textAlignment = .left
         lbl.numberOfLines = 0
         lbl.sizeToFit()
- //       lbl.backgroundColor = .green
         return lbl
     }()
     let rowImage : UIImageView = {
         let imgView = UIImageView()
-     //   imgView.backgroundColor = .orange
         imgView.contentMode = .scaleAspectFit
         imgView.clipsToBounds = true
         return imgView
@@ -40,9 +38,20 @@ class RowDataCell: UITableViewCell {
     
     var row : Rows? {
         didSet {
-            rowImage.image = UIImage(named: "placeholder")
             if let imgUrl = row?.imageHref {
-                rowImage.sd_setImage(with: URL(string: imgUrl), placeholderImage: UIImage(named: "placeholder"))
+                rowImage.sd_setImage(with: URL(string: imgUrl), placeholderImage: UIImage(named: "Placeholder"), options: .lowPriority) { (image, error, cacheType, imageURL) in
+                    
+                    if  error != nil {
+                        self.rowImage.image = UIImage(named:"Placeholder")
+                    }
+                    else {
+                        self.rowImage.image = image
+                    }
+                    
+                }
+            }
+            else {
+                rowImage.image = UIImage(named:"Placeholder")
             }
             rowTitleLbl.text = row?.title
             rowDescriptionLabel.text = row?.description
