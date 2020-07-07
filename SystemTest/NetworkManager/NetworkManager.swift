@@ -45,19 +45,15 @@ class Network {
 
 struct ShowAlert {
     static func showAlert(_ title : String ,_ message : String){
-        
-      
         DispatchQueue.main.async {
             guard let vc  = UIApplication.shared.keyWindow?.rootViewController else {
-                      return
-                  }
+                return
+            }
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             let ok = UIAlertAction(title: "OK", style: .default)
             alert.addAction(ok)
-            
             vc.present(alert, animated: true, completion: nil)
         }
     }
-    
-    
+
 }

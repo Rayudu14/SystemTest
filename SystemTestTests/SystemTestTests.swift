@@ -32,7 +32,6 @@ class SystemTestTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-    
     func testValidCallToGetsHTTPStatusCode200() {
         let url = URL(string: URLConstants.rowsURL)
         let promise = expectation(description: "Status code: 200")
@@ -42,8 +41,7 @@ class SystemTestTests: XCTestCase {
                 return
             } else if let statusCode = (response as? HTTPURLResponse)?.statusCode {
                 if statusCode == 200 {
-                    promise.fulfill()
-                    
+                promise.fulfill()
                     
                 } else {
                     XCTFail("Status code: \(statusCode)")
@@ -51,6 +49,30 @@ class SystemTestTests: XCTestCase {
             }
         }
         dataTask.resume()
+        wait(for: [promise], timeout: 5)
+    }
+    
+    func testCheckForRowsCountNotZeroAndCheckTitle() {
+        let promise = expectation(description: "Rows count not equal to zero")
+        Network.getApiCallWithRequestURLString(requestString: URLConstants.rowsURL, completionBlock: { (data) in
+            do {
+                let str = String(decoding: data, as: UTF8.self)
+                if let data = str.data(using: .utf8) {
+                    let jsonDecoder = JSONDecoder()
+                    /// Converting response to our custom model
+                    let responseModel = try jsonDecoder.decode(MainJson.self, from: data)
+                    XCTAssertNotNil(responseModel)
+                    XCTAssertTrue(responseModel.title == "About Canada")
+                    XCTAssertTrue(responseModel.rows?.count != 0)
+                    promise.fulfill()
+                }
+            }
+            catch(let error) {
+                XCTFail("Status code: \(error.localizedDescription)")
+            }
+        }) { (error) in
+            XCTFail("Status code: \(error.localizedDescription)")
+        }
         wait(for: [promise], timeout: 5)
     }
 }
