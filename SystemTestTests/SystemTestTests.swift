@@ -10,13 +10,15 @@ import XCTest
 @testable import SystemTest
 
 class SystemTestTests: XCTestCase {
-
+    var urlSession: URLSession!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        urlSession = URLSession(configuration: .default)
     }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        urlSession = nil
     }
 
     func testExample() {
@@ -30,5 +32,25 @@ class SystemTestTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
+    
+    func testValidCallToGetsHTTPStatusCode200() {
+        let url = URL(string: URLConstants.rowsURL)
+        let promise = expectation(description: "Status code: 200")
+        let dataTask = urlSession.dataTask(with: url!) { data, response, error in
+            if let error = error {
+                XCTFail("Error: \(error.localizedDescription)")
+                return
+            } else if let statusCode = (response as? HTTPURLResponse)?.statusCode {
+                if statusCode == 200 {
+                    promise.fulfill()
+                    
+                    
+                } else {
+                    XCTFail("Status code: \(statusCode)")
+                }
+            }
+        }
+        dataTask.resume()
+        wait(for: [promise], timeout: 5)
+    }
 }

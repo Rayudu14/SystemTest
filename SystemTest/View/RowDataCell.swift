@@ -11,6 +11,13 @@ import SDWebImage
 
 class RowDataCell: UITableViewCell {
     
+    let leadingAnchorConstant: CGFloat  = 5.0
+    let trailingAnchorConstant:CGFloat  = -5.0
+    let topAnchorConstant :CGFloat      = 5.0
+    let bottomAnchorConstant:CGFloat    = -5.0
+    let equalWidthtConstant: CGFloat = 100
+    let equalHeightConstant:CGFloat  = 100
+    
     private let rowTitleLbl : UILabel = {
         let lbl = UILabel()
         lbl.textColor = .black
@@ -66,20 +73,19 @@ class RowDataCell: UITableViewCell {
         rowTitleLbl.translatesAutoresizingMaskIntoConstraints = false
         rowDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        rowTitleLbl.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
-        rowTitleLbl.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor,      constant: 5).isActive = true
-        rowTitleLbl.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5).isActive = true
+        rowTitleLbl.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: topAnchorConstant).isActive = true
+        rowTitleLbl.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor,      constant: leadingAnchorConstant).isActive = true
+        rowTitleLbl.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: trailingAnchorConstant).isActive = true
         
-        rowImage.topAnchor.constraint(equalTo: rowTitleLbl.bottomAnchor, constant: 5).isActive = true
-        rowImage.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5).isActive = true
-        rowImage.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        rowImage.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        rowDescriptionLabel.topAnchor.constraint(equalTo: rowImage.bottomAnchor, constant: 5).isActive = true
-        rowDescriptionLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5).isActive = true
-        rowDescriptionLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5).isActive = true
-        rowDescriptionLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5).isActive = true
+        rowImage.topAnchor.constraint(equalTo: rowTitleLbl.bottomAnchor, constant: topAnchorConstant).isActive = true
+        rowImage.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: leadingAnchorConstant).isActive = true
+        rowImage.widthAnchor.constraint(equalToConstant: equalWidthtConstant).isActive = true
+        rowImage.heightAnchor.constraint(equalToConstant: equalHeightConstant).isActive = true
+
+        rowDescriptionLabel.topAnchor.constraint(equalTo: rowImage.bottomAnchor, constant: topAnchorConstant).isActive = true
+        rowDescriptionLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: leadingAnchorConstant).isActive = true
+        rowDescriptionLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: trailingAnchorConstant).isActive = true
+        rowDescriptionLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: bottomAnchorConstant).isActive = true
     }
     
     required init?(coder: NSCoder) {

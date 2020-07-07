@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     let cellId        = "cellId"
     var rowsTableView = UITableView()
     var rowsVM        = RowsViewModel()
+    var rows           = [Rows]()
     
     var navTitle: String = "" {
         didSet {
@@ -32,9 +33,20 @@ class ViewController: UIViewController {
         super.loadView()
         
         setupTableView()
-        rowsVM.vc = self
         /// calling the webservice to get data
-        rowsVM.getRowsInfoFromService()
+        getDataFromService()
+       
+    }
+   func getDataFromService() {
+        rowsVM.getRowsInfoFromService { [weak self](mainJson) in
+                   if let rowsArray = mainJson.rows {
+                    self?.rows = rowsArray
+                       DispatchQueue.main.async {
+                        self?.navigationItem.title = mainJson.title
+                        self?.rowsTableView.reloadData()
+                       }
+                   }
+               }
     }
     /// updating title after we get the response from service
     func updateNavTitle() {
@@ -42,7 +54,7 @@ class ViewController: UIViewController {
     }
     /// In order to get updated information user needs to pull the table view downwards
     @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
-        rowsVM.getRowsInfoFromService()
+        getDataFromService()
         refreshControl.endRefreshing()
     }
     /// Adding constraints to table view
@@ -61,13 +73,13 @@ class ViewController: UIViewController {
 extension ViewController : UITableViewDataSource {
     /// TableView DataSource Methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        rowsVM.rowsArray.count
+        rows.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell            = tableView.dequeueReusableCell(withIdentifier: cellId, for:                                       indexPath) as! RowDataCell
         cell.selectionStyle = .none
-        let rowModel        = rowsVM.rowsArray[indexPath.row]
+        let rowModel        = rows[indexPath.row]
         cell.row            = rowModel /// passing model to custom cell
         return cell
     }

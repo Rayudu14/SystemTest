@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import UIKit
+enum Errors: Error {
+       case invalidURL
+       case invalidResponse(error:String)
+       case invalidData
+   }
 
-enum URLError : Error {
-    case unformatedURL
-    case dataNotFound
-}
 // A global container for URL
 struct URLConstants {
     static let rowsURL = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
@@ -19,28 +21,43 @@ struct URLConstants {
 
 class Network {
     
-    /// Get API Call
-    static func getApiCallWithRequestString(requestString: String, completionBlock: @escaping((Result<Data, Error>) -> Void)) {
+  static func getApiCallWithRequestURLString(requestString:String,completionBlock:@escaping((_ response:Data) -> Void), failureBlock:@escaping((_ error: Errors)->Void)) {
+       
+           guard let url = URL(string: requestString) else {
+            failureBlock(.invalidURL)
+               return;
+           }
+       
+           let dataTask = URLSession.shared.dataTask(with: url) { (responseData, httpResponse, error) in
+               if ( error == nil ) {
+                   if ( responseData == nil || responseData?.count == 0 ) {
+                    failureBlock(.invalidData)
+                   }else {
+                       completionBlock(responseData!)
+                   }
+               }else {
+                failureBlock(.invalidResponse(error: error?.localizedDescription ?? ""))
+               }
+           }
+           dataTask.resume();
+       }
+}
+
+struct ShowAlert {
+    static func showAlert(_ title : String ,_ message : String){
         
-        guard let url = URL(string: requestString) else {
-            completionBlock(.failure(URLError.unformatedURL))
-            return
+      
+        DispatchQueue.main.async {
+            guard let vc  = UIApplication.shared.keyWindow?.rootViewController else {
+                      return
+                  }
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let ok = UIAlertAction(title: "OK", style: .default)
+            alert.addAction(ok)
+            
+            vc.present(alert, animated: true, completion: nil)
         }
-        
-        let dataTask = URLSession.shared.dataTask(with: url) { (responseData, httpResponse, error) in
-            
-            if let err = error {
-                completionBlock(.failure(err))
-                return
-            }
-            
-            guard let response = responseData else {
-                completionBlock(.failure(URLError.dataNotFound))
-                return
-            }
-            
-            completionBlock(.success(response))
-        }
-        dataTask.resume();
     }
+    
+    
 }
